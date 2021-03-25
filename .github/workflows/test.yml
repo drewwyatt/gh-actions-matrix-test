@@ -25,7 +25,7 @@ jobs:
     - name: Create workspace
       run: |
         mkdir ${{env.WORKING_DIR}}
-        zstd -T0 - -o ${{format('{0}.tar.zst', env.WORKING_DIR)}}
+        ${{format('find . -name "{0}" -prune | tar -cf - -T - | zstd -T0 - -o {0}.tar.zst', env.WORKING_DIR)}}
     - name: Upload workspace
       uses: actions/upload-artifact@v2
       with:
@@ -52,6 +52,7 @@ jobs:
     needs: [job1, job2]
     runs-on: ubuntu-latest
     strategy:
+      max-parallel: 1 # do this one at a time to avoid race conditions
       matrix: ${{fromJSON(needs.job1.outputs.matrix)}}
     steps:
       - name: Download workspace
