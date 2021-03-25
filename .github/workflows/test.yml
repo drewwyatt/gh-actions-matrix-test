@@ -15,9 +15,10 @@ jobs:
   build-matrix:
     runs-on: ubuntu-latest
     outputs:
-      matrix: ${{ steps.step1.outputs.test }}
+      matrix: ${{ steps.thing.outputs.test }}
     steps:
-      - id: step1
+      - run: echo "${{ env.APPS }}"
+      - id: thing
         run: echo "::set-output name=test::${{ env.APPS }}"
   job1:
     runs-on: ubuntu-latest
