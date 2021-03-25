@@ -32,6 +32,7 @@ jobs:
         if-no-files-found: error
         name: ${{format('{0}.tar.zst', env.WORKING_DIR)}}
         path: ${{format('{0}.tar.zst', env.WORKING_DIR)}}
+        retention-days: 1
   job2:
     needs: job1
     runs-on: ubuntu-latest
@@ -61,7 +62,9 @@ jobs:
       - name: 'DEBUG: List ROOT'
         run: ls -la
       - name: Unzip working dir
-        run: unzstd -T0 ${{ format('{0}.tar.zst', env.WORKING_DIR) }} --stdout | tar -xf -
+        run: |
+          ${{format('unzstd -T0 {0}.tar.zst --stdout | tar -xf -', env.WORKING_DIR)}}
+          ${{format('rm {0}.tar.zst', env.WORKING_DIR)}}
       - name: 'DEBUG: List ROOT'
         run: ls -la
       - name: Download artifact
@@ -74,10 +77,11 @@ jobs:
         working-directory: ${{env.WORKING_DIR}}
       - name: Rezip workspace
         run: zstd -T0 - -o ${{format('{0}.tar.zst', env.WORKING_DIR)}}
-      - name: ReUpload workspace
+      - name: Reupload workspace
         uses: actions/upload-artifact@v2
         with:
           if-no-files-found: error
           name: ${{format('{0}.tar.zst', env.WORKING_DIR)}}
           path: ${{format('{0}.tar.zst', env.WORKING_DIR)}}
+          retention-days: 1
 
