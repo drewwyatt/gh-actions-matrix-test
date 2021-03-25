@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        include: ${{ fromJSON(env.APPS) }}
+        include: ${{ fromJSON(APPS) }}
     outputs:
       names: ${{ steps.step1.outputs.test }}
     steps:
