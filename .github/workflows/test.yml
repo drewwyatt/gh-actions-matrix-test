@@ -15,7 +15,8 @@ jobs:
   build-matrix:
     runs-on: ubuntu-latest
     outputs:
-      matrix: ${{ steps.thing.outputs.test }}
+      matrix:
+        include: ${{ steps.thing.outputs.test }}
     steps:
       - run: echo "${{ env.APPS }}"
       - id: thing
