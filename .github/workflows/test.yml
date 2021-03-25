@@ -1,42 +1,23 @@
 name: test
 on: push
 
-env:
-  APPS: |
-    [
-      { "name": "Leonardo" },
-      { "name": "Raphael" },
-      { "name": "Donatello" },
-      { "name": "Michelangelo" }
-    ]
-
-
 jobs:
-  build-matrix:
-    runs-on: ubuntu-latest
-    outputs:
-      matrix: ${{ steps.thing.outputs.test }}
-    steps:
-      - run: echo "${{ env.APPS }}"
-      - id: thing
-        run: echo "::set-output name=test::${{ env.APPS }}"
-  check-output:
-    runs-on: ubuntu-latest
-    needs: build-matrix
-    steps:
-      - run: echo "${{needs.build-matrix.outputs.matrix}}"
-      - run: echo "${{fromJSON(needs.build-matrix.outputs.matrix)[0].name}}"
   job1:
     runs-on: ubuntu-latest
-    needs: build-matrix
-    strategy:
-      matrix:
-        include: ${{ fromJSON(needs.build-matrix.outputs.matrix) }}
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
-      - id: step1
-        run: echo "${{ matrix.name }}"
+    - id: set-matrix
+      run: echo "::set-output name=matrix::{\"include\":[{\"project\":\"foo\",\"config\":\"Debug\"},{\"project\":\"bar\",\"config\":\"Release\"}]}"
   job2:
+    needs: job1
     runs-on: ubuntu-latest
-    needs: [build-matrix, job1]
+    strategy:
+      matrix: ${{fromJSON(needs.job1.outputs.matrix)}}
     steps:
-      - run: echo "outputs ${{needs.build-matrix.outputs.matrix}}"
+    - run: echo ${{matrix.project}}
+  job3:
+    needs: [job1, job2]
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo ${{needs.job1.outputs.matrix}}
