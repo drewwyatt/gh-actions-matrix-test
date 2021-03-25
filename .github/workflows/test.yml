@@ -1,16 +1,22 @@
 name: test
 on: push
 
+env:
+  APPS: |
+    [
+      { "name": "Leonardo" },
+      { "name": "Raphael" },
+      { "name": "Donatello" },
+      { "name": "Michelangelo" },
+    ]
+
+
 jobs:
   job1:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        include:
-          - name: Leonardo
-          - name: Raphael
-          - name: Donatello
-          - name: Michelangelo
+        include: ${{ fromJSON(env.APPS) }}
     outputs:
       names: ${{ steps.step1.outputs.test }}
     steps:
