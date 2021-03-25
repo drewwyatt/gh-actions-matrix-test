@@ -3,12 +3,12 @@ on: push
 
 env:
   APPS: |
-    ${{ toJSON([
+    ${{ toJSON('[
       { "name": "Leonardo" },
       { "name": "Raphael" },
       { "name": "Donatello" },
       { "name": "Michelangelo" }
-    ])}}
+    ]')}}
 
 
 jobs:
