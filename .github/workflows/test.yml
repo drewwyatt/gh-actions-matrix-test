@@ -1,6 +1,9 @@
 name: test
 on: push
 
+env:
+  WORKING_DIR: test-thing-wow
+
 jobs:
   job1:
     runs-on: ubuntu-latest
@@ -19,15 +22,63 @@ jobs:
             \"config\":\"Release\"\
           }\
         ]}"
+    - name: Create workspace
+      run: |
+        mkdir ${{env.WORKING_DIR}}
+        zstd -T0 - -o ${{format('{0}.tar.zst', env.WORKING_DIR)}}
+    - name: Upload workspace
+      uses: actions/upload-artifact@v2
+      with:
+        if-no-files-found: error
+        name: ${{format('{0}.tar.zst', env.WORKING_DIR)}}
+        path: ${{format('{0}.tar.zst', env.WORKING_DIR)}}
+        retention-days: 1
   job2:
     needs: job1
     runs-on: ubuntu-latest
     strategy:
       matrix: ${{fromJSON(needs.job1.outputs.matrix)}}
     steps:
-    - run: echo ${{matrix.project}}
+      - name: Make file
+        run: echo ${{matrix.config}} > ${{matrix.project}}
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          if-no-files-found: error
+          name: ${{matrix.project}}
+          path: ${{matrix.project}}
+          retention-days: 1
   job3:
-    needs: [job1, job2]
+    needs: job2
     runs-on: ubuntu-latest
+    strategy:
+      matrix: ${{fromJSON(needs.job1.outputs.matrix)}}
     steps:
-      - run: echo ${{needs.job1.outputs.matrix}}
+      - name: Download workspace
+        uses: actions/download-artifact@v2
+        with:
+          name: ${{format('{0}.tar.zst', env.WORKING_DIR)}}
+      - name: 'DEBUG: List ROOT'
+        run: ls -la
+      - name: Unzip working dir
+        run: unzstd -T0 ${{ format('{0}.tar.zst', env.WORKING_DIR) }} --stdout | tar -xf -
+      - name: 'DEBUG: List ROOT'
+        run: ls -la
+      - name: Download artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: ${{format('{0}.tar.zst', matrix.project)}}
+          path: ${{env.WORKING_DIR}}
+      - name: 'DEBUG: List WORKING_DIR'
+        run: ls -la
+        working-directory: ${{env.WORKING_DIR}}
+      - name: Rezip workspace
+        run: zstd -T0 - -o ${{format('{0}.tar.zst', env.WORKING_DIR)}}
+      - name: ReUpload workspace
+        uses: actions/upload-artifact@v2
+        with:
+          if-no-files-found: error
+          name: ${{format('{0}.tar.zst', env.WORKING_DIR)}}
+          path: ${{format('{0}.tar.zst', env.WORKING_DIR)}}
+          retention-days: 1
+
