@@ -30,8 +30,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: build-matrix
     strategy:
-      matrix:
-        apps: ${{ fromJSON(needs.build-matrix.outputs.matrix) }}
+      matrix: ${{ fromJSON(needs.build-matrix.outputs.matrix) }}
     steps:
       - id: step1
         run: echo "${{ matrix.name }}"
