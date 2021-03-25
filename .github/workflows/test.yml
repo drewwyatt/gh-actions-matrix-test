@@ -15,8 +15,7 @@ jobs:
   build-matrix:
     runs-on: ubuntu-latest
     outputs:
-      matrix:
-        include: ${{ steps.thing.outputs.test }}
+      matrix: ${{ steps.thing.outputs.test }}
     steps:
       - run: echo "${{ env.APPS }}"
       - id: thing
@@ -31,7 +30,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: build-matrix
     strategy:
-      matrix: ${{ fromJSON(needs.build-matrix.outputs.matrix) }}
+      matrix:
+        include: ${{ fromJSON(needs.build-matrix.outputs.matrix) }}
     steps:
       - id: step1
         run: echo "${{ matrix.name }}"
