@@ -76,7 +76,7 @@ jobs:
         run: ls -la
         working-directory: ${{env.WORKING_DIR}}
       - name: Rezip workspace
-        run: zstd -T0 - -o ${{format('{0}.tar.zst', env.WORKING_DIR)}}
+        run: ${{format('find . -name "{0}" -prune | tar -cf - -T - | zstd -T0 - -o {0}.tar.zst', env.WORKING_DIR)}}
       - name: Reupload workspace
         uses: actions/upload-artifact@v2
         with:
