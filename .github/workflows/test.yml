@@ -49,7 +49,7 @@ jobs:
           path: ${{matrix.project}}
           retention-days: 1
   job3:
-    needs: job2
+    needs: [job1, job2]
     runs-on: ubuntu-latest
     strategy:
       matrix: ${{fromJSON(needs.job1.outputs.matrix)}}
