@@ -68,7 +68,7 @@ jobs:
       - name: Download artifact
         uses: actions/download-artifact@v2
         with:
-          name: ${{format('{0}.tar.zst', matrix.project)}}
+          name: ${{matrix.project}}
           path: ${{env.WORKING_DIR}}
       - name: 'DEBUG: List WORKING_DIR'
         run: ls -la
