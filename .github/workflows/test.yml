@@ -15,11 +15,13 @@ jobs:
         echo "::set-output name=matrix::{\"include\":[\
           {\
             \"project\":\"foo\",\
-            \"config\":\"Debug\"\
+            \"config\":\"Debug\",\
+            \"env\": { \"SOME_KEY\": \"this is a secret key\" },\
           },\
           {\
             \"project\":\"bar\",\
-            \"config\":\"Release\"\
+            \"config\":\"Release\",\
+            \"env\": { \"SOME_KEY\": \"a different secret key\" },\
           }\
         ]}"
     - name: Create workspace
@@ -48,6 +50,21 @@ jobs:
           name: ${{matrix.project}}
           path: ${{matrix.project}}
           retention-days: 1
+  job4:
+    name: Run test.js
+    needs: job1
+    runs-on: ubuntu-latest
+    strategy:
+      matrix: ${{ fromJSON(needs.job1.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 14.x
+      - run: node ./test.js
+        env:
+          SECRET_KEY: 'SOME STATIC KEY'
+
   job3:
     needs: [job1, job2]
     runs-on: ubuntu-latest
