@@ -63,7 +63,7 @@ jobs:
           node-version: 14.x
       - run: node ./test.js
         env:
-          SECRET_KEY: 'SOME STATIC KEY'
+          SOME_KEY: 'SOME STATIC KEY'
 
   job3:
     needs: [job1, job2]
