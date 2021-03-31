@@ -62,8 +62,7 @@ jobs:
         with:
           node-version: 14.x
       - run: node ./test.js
-        env:
-          SOME_KEY: 'SOME STATIC KEY'
+        env: ${{ matrix.env }}
 
   job3:
     needs: [job1, job2]
