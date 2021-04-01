@@ -2,7 +2,6 @@ name: test
 on: push
 
 env:
-  SOME_SECRET_KEY: ${{ secrets.SOME_KEY }}
   WORKING_DIR: test-thing-wow
 
 jobs:
@@ -13,24 +12,16 @@ jobs:
     steps:
     - id: set-matrix
       uses: actions/github-script@v3
-      env:
-        SOME_KEY: ${{ env.SOME_SECRET_KEY }}
       with:
         script: |
           return [
             {
               project: 'foo',
               config: 'Debug',
-              env: {
-                SOME_KEY: `${process.env.SOME_KEY || ':shrug:'}`,
-              },
             },
             {
               project: 'bar',
               config: 'Release',
-              env: {
-                SOME_KEY: 'a different key',
-              },
             },
           ]
     - name: Create workspace
@@ -73,7 +64,9 @@ jobs:
         with:
           node-version: 14.x
       - run: node ./test.js
-        env: ${{ matrix.env }}
+        env: 
+          INPUTS_AS_JSON: ${{ toJSON(matrix) }}
+          SOME_KEY: ${{ secrets.SOME_KEY }}
 
   job3:
     needs: [job1, job2]
