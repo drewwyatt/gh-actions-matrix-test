@@ -62,7 +62,8 @@ jobs:
     needs: job1
     runs-on: ubuntu-latest
     strategy:
-      matrix: ${{ fromJSON(needs.job1.outputs.matrix) }}
+      matrix: 
+        include: ${{ fromJSON(needs.job1.outputs.matrix) }}
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
