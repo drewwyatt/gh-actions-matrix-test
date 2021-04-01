@@ -2,6 +2,7 @@ name: test
 on: push
 
 env:
+  SOME_SECRET_KEY: ${{ secrets.SOME_KEY }}
   WORKING_DIR: test-thing-wow
 
 jobs:
@@ -13,7 +14,7 @@ jobs:
     - id: set-matrix
       uses: actions/github-script@v3
       env:
-        SOME_KEY: ${{ secrets.SOME_KEY }}
+        SOME_KEY: ${{ env.SOME_SECRET_KEY }}
       with:
         script: |
           return [
