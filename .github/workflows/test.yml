@@ -45,7 +45,8 @@ jobs:
     needs: job1
     runs-on: ubuntu-latest
     strategy:
-      matrix: ${{needs.job1.outputs.matrix}}
+      matrix: 
+        include: ${{needs.job1.outputs.matrix}}
     steps:
       - name: Make file
         run: echo ${{matrix.config}} > ${{matrix.project}}
