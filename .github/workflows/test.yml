@@ -8,7 +8,7 @@ jobs:
   job1:
     runs-on: ubuntu-latest
     outputs:
-      matrix: ${{ steps.set-matrix.outputs.matrix }}
+      matrix: ${{ steps.set-matrix.outputs.result }}
     steps:
     - id: set-matrix
       uses: actions/github-script@v3
@@ -30,20 +30,6 @@ jobs:
               },
             },
           ]
-#     - id: set-matrix
-#       run: |
-#         echo "::set-output name=matrix::{\"include\":[\
-#           {\
-#             \"project\":\"foo\",\
-#             \"config\":\"Debug\",\
-#             \"env\": { \"SOME_KEY\": \"" ${{ secrets.SOME_KEY }} "\" },\
-#           },\
-#           {\
-#             \"project\":\"bar\",\
-#             \"config\":\"Release\",\
-#             \"env\": { \"SOME_KEY\": \"a different secret key\" },\
-#           }\
-#         ]}"
     - name: Create workspace
       run: |
         mkdir ${{env.WORKING_DIR}}
