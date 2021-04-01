@@ -11,19 +11,39 @@ jobs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
     - id: set-matrix
-      run: |
-        echo "::set-output name=matrix::{\"include\":[\
-          {\
-            \"project\":\"foo\",\
-            \"config\":\"Debug\",\
-            \"env\": { \"SOME_KEY\": \"" ${{ secrets.SOME_KEY }} "\" },\
-          },\
-          {\
-            \"project\":\"bar\",\
-            \"config\":\"Release\",\
-            \"env\": { \"SOME_KEY\": \"a different secret key\" },\
-          }\
-        ]}"
+      uses: actions/github-script@v3
+      with:
+        script: |
+          return [
+            {
+              project: 'foo',
+              config: 'Debug',
+              env: {
+                SOME_KEY: 'wow',
+              },
+            },
+            {
+              project: 'bar',
+              config: 'Release',
+              env: {
+                SOME_KEY: 'a different key',
+              },
+            },
+          ]
+#     - id: set-matrix
+#       run: |
+#         echo "::set-output name=matrix::{\"include\":[\
+#           {\
+#             \"project\":\"foo\",\
+#             \"config\":\"Debug\",\
+#             \"env\": { \"SOME_KEY\": \"" ${{ secrets.SOME_KEY }} "\" },\
+#           },\
+#           {\
+#             \"project\":\"bar\",\
+#             \"config\":\"Release\",\
+#             \"env\": { \"SOME_KEY\": \"a different secret key\" },\
+#           }\
+#         ]}"
     - name: Create workspace
       run: |
         mkdir ${{env.WORKING_DIR}}
