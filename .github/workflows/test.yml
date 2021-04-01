@@ -16,7 +16,7 @@ jobs:
           {\
             \"project\":\"foo\",\
             \"config\":\"Debug\",\
-            \"env\": { \"SOME_KEY\": \"${{ secrets.SOME_KEY }}\" },\
+            \"env\": { \"SOME_KEY\": \"" ${{ secrets.SOME_KEY }} "\" },\
           },\
           {\
             \"project\":\"bar\",\
