@@ -19,7 +19,7 @@ jobs:
               project: 'foo',
               config: 'Debug',
               env: {
-                SOME_KEY: 'wow',
+                SOME_KEY: secrets.SOME_KEY,
               },
             },
             {
