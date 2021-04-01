@@ -46,7 +46,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix: 
-        include: ${{needs.job1.outputs.matrix}}
+        include: ${{fromJSON(needs.job1.outputs.matrix)}}
     steps:
       - name: Make file
         run: echo ${{matrix.config}} > ${{matrix.project}}
