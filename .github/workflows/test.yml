@@ -10,6 +10,8 @@ jobs:
     outputs:
       matrix: ${{ steps.set-matrix.outputs.result }}
     steps:
+    - name: log stuff
+      run: echo "toJSON(github)"
     - id: set-matrix
       uses: actions/github-script@v3
       with:
