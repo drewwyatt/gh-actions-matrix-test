@@ -5,6 +5,10 @@ env:
   WORKING_DIR: test-thing-wow
 
 jobs:
+  job0:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "-${{github.event.pull_request.head.sha}}-"
   job1:
     runs-on: ubuntu-latest
     outputs:
@@ -41,7 +45,7 @@ jobs:
     needs: job1
     runs-on: ubuntu-latest
     strategy:
-      matrix: 
+      matrix:
         include: ${{fromJSON(needs.job1.outputs.matrix)}}
     steps:
       - name: Make file
@@ -58,7 +62,7 @@ jobs:
     needs: job1
     runs-on: ubuntu-latest
     strategy:
-      matrix: 
+      matrix:
         include: ${{ fromJSON(needs.job1.outputs.matrix) }}
     steps:
       - uses: actions/checkout@v2
@@ -66,7 +70,7 @@ jobs:
         with:
           node-version: 14.x
       - run: node ./test.js
-        env: 
+        env:
           INPUTS_AS_JSON: ${{ toJSON(matrix) }}
           SOME_KEY: ${{ secrets.SOME_KEY }}
 
